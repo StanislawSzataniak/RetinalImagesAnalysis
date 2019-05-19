@@ -38,10 +38,12 @@ print('Data: ' + str(dataMatrix.shape))
 print('Standarts: ' + str(standards.shape))
 
 print('Dividing data: ')
-training_x = np.concatenate(dataMatrix[:9, :, :], axis=0)
-testing_x = np.concatenate(dataMatrix[9:, :, :], axis=0)
-training_y = np.concatenate(standards[:9], axis=0)
-testing_y = np.concatenate(standards[9:], axis=0)
+training_x = np.concatenate((dataMatrix[:3, :, :], dataMatrix[6:, :, :]), axis=0)
+training_x = np.concatenate(training_x, axis=0)
+testing_x = np.concatenate(dataMatrix[3:6, :, :], axis=0)
+training_y = np.concatenate((standards[:3], standards[6:]), axis=0)
+training_y = np.concatenate(training_y, axis=0)
+testing_y = np.concatenate(standards[3:6], axis=0)
 
 print('Training:')
 print(training_x.shape)
@@ -51,7 +53,7 @@ print(testing_x.shape)
 print(testing_y.shape)
 
 filepath = "weights_best.hdf5"
-checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
 callbacks_list = [checkpoint]
 
 model = Sequential()
@@ -66,7 +68,7 @@ model.compile(loss='binary_crossentropy', # budujemy model! ustawiamy funkcję k
 with open("model.json", "w") as json_file:
     json_file.write(model.to_json())
 
-model.fit(training_x, training_y, epochs=10, callbacks=callbacks_list)
+model.fit(training_x, training_y, epochs=20, batch_size=100, callbacks=callbacks_list, verbose=2)
 
 # serialize weights to HDF5
 model.save_weights("weights.hdf5")
