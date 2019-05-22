@@ -1,0 +1,2 @@
+,TP,FP,TN,FN,Sensitivity,Specificity,Precision,Accuracy,Geometric mean
+0,95844,50080,1404677,178321,0.35,0.97,0.66,0.87,0.58
